@@ -15,7 +15,7 @@ class OtpManager
         protected OtpGenerator $generator
     ) {}
 
-    public function send(string $guard, string $identifier): OtpData
+    public function generate(string $guard, string $identifier): OtpData
     {
         $code = $this->generator->generate(config('otp.length', 6));
 

@@ -4,9 +4,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('can send otp', function () {
+it('can generate otp', function () {
     $otpData = app(\SohrabAzinfar\OTP\Managers\OtpManager::class)
-        ->send('web', 'test@example.com');
+        ->generate('web', 'test@example.com');
 
     expect($otpData->otp)->not->toBeNull();
 
@@ -19,7 +19,7 @@ it('can send otp', function () {
 it('can verify otp successfully', function () {
     $manager = app(\SohrabAzinfar\OTP\Managers\OtpManager::class);
 
-    $otpData = $manager->send('web', 'test@example.com');
+    $otpData = $manager->generate('web', 'test@example.com');
 
     $result = $manager->verify('web', 'test@example.com', $otpData->code);
 
@@ -34,7 +34,7 @@ it('can verify otp successfully', function () {
 it('fails verification with wrong code', function () {
     $manager = app(\SohrabAzinfar\OTP\Managers\OtpManager::class);
 
-    $otpData = $manager->send('web', 'test@example.com');
+    $otpData = $manager->generate('web', 'test@example.com');
 
     $result = $manager->verify('web', 'test@example.com', '000000');
 
@@ -59,7 +59,7 @@ it('fails when otp is expired', function () {
 it('fails when otp already used', function () {
     $manager = app(\SohrabAzinfar\OTP\Managers\OtpManager::class);
 
-    $otpData = $manager->send('web', 'test@example.com');
+    $otpData = $manager->generate('web', 'test@example.com');
 
     $manager->verify('web', 'test@example.com', $otpData->code);
 
@@ -73,7 +73,7 @@ it('dispatches otp sent event', function () {
 
     $manager = app(\SohrabAzinfar\OTP\Managers\OtpManager::class);
 
-    $manager->send('web', 'test@example.com');
+    $manager->generate('web', 'test@example.com');
 
     \Illuminate\Support\Facades\Event::assertDispatched(
         \SohrabAzinfar\OTP\Events\OtpSentEvent::class
@@ -85,7 +85,7 @@ it('dispatches otp verified event', function () {
 
     $manager = app(\SohrabAzinfar\OTP\Managers\OtpManager::class);
 
-    $otpData = $manager->send('web', 'test@example.com');
+    $otpData = $manager->generate('web', 'test@example.com');
 
     $manager->verify('web', 'test@example.com', $otpData->code);
 
@@ -97,8 +97,8 @@ it('dispatches otp verified event', function () {
 it('isolates otp by guard', function () {
     $manager = app(\SohrabAzinfar\OTP\Managers\OtpManager::class);
 
-    $otpData1 = $manager->send('web', 'test@example.com');
-    $otpData2 = $manager->send('api', 'test@example.com');
+    $otpData1 = $manager->generate('web', 'test@example.com');
+    $otpData2 = $manager->generate('api', 'test@example.com');
 
     expect($otpData1->otp->guard)->not->toBe($otpData2->otp->guard);
 });
