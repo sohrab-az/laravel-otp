@@ -1,0 +1,37 @@
+{
+  "name": "sohrab-az/laravel-otp",
+  "description": "A flexible otp package for Laravel",
+  "type": "library",
+  "version": "1.0.0",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "SohrabAzinfar\\OTP\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SohrabAzinfar\\OTP\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "SohrabAzinfar\\OTP\\OtpServiceProvider"
+      ]
+    }
+  },
+  "require": {
+    "php": "^8.2"
+  },
+  "require-dev": {
+    "pestphp/pest": "^4.7",
+    "pestphp/pest-plugin-laravel": "^4.1",
+    "orchestra/testbench": "^11.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
