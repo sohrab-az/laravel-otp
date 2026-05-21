@@ -1,6 +1,6 @@
 <?php
 
-namespace SohrabAzinfar\OTP\Managers;
+namespace SohrabAzinfar\OTP\Services;
 
 use Illuminate\Support\Facades\Hash;
 use SohrabAzinfar\OTP\Data\OtpData;
@@ -9,7 +9,7 @@ use SohrabAzinfar\OTP\Events\OtpVerifiedEvent;
 use SohrabAzinfar\OTP\Models\OtpCode;
 use SohrabAzinfar\OTP\Services\OtpGenerator;
 
-class OtpManager
+class OtpService
 {
     public function __construct(
         protected OtpGenerator $generator
@@ -26,9 +26,16 @@ class OtpManager
             'expires_at' => now()->addSeconds(config('otp.ttl', 120)),
         ]);
 
-        event(new OtpSentEvent($otp, $code));
+        $otpData = new OtpData(
+            guard: $guard,
+            identifier: $identifier,
+            code: $code,
+            expiresAt: $otp->expires_at,
+        );
 
-        return new OtpData($otp, $code);
+        event(new OtpSentEvent($otpData));
+
+        return $otpData;
     }
 
     public function verify(string $guard, string $identifier, string $code): bool
@@ -52,7 +59,14 @@ class OtpManager
             'used_at' => now(),
         ]);
 
-        event(new OtpVerifiedEvent($otp, $code));
+        $otpData = new OtpData(
+            guard: $guard,
+            identifier: $identifier,
+            code: $code,
+            expiresAt: $otp->expires_at,
+        );
+
+        event(new OtpVerifiedEvent($otpData));
 
         return true;
     }

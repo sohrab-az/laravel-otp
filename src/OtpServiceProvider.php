@@ -4,14 +4,14 @@ namespace SohrabAzinfar\OTP;
 
 use Illuminate\Support\ServiceProvider;
 use SohrabAzinfar\OTP\Commands\CleanExpiredOtps;
-use SohrabAzinfar\OTP\Managers\OtpManager;
+use SohrabAzinfar\OTP\Services\OtpService;
 
 class OtpServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(OtpManager::class);
-        $this->app->alias(OtpManager::class, 'otp');
+        $this->app->singleton(OtpService::class);
+        $this->app->alias(OtpService::class, 'otp');
 
         $this->mergeConfigFrom(
             __DIR__.'/../config/otp.php',
